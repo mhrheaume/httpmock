@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 /// A general abstraction of an HTTP request of `httpmock`.
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct HttpMockRequest {
     pub path: String,
     pub method: String,
@@ -47,6 +47,24 @@ impl HttpMockRequest {
     pub fn with_body(mut self, arg: Vec<u8>) -> Self {
         self.body = Some(arg);
         self
+    }
+}
+
+impl fmt::Debug for HttpMockRequest {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("HttpMockRequest")
+            .field("path", &self.path)
+            .field("method", &self.method)
+            .field("headers", &self.headers)
+            .field("query_params", &self.query_params)
+            .field(
+                "body",
+                &self
+                    .body
+                    .as_ref()
+                    .map(|x| String::from_utf8_lossy(x.as_ref()).to_string()),
+            )
+            .finish()
     }
 }
 
